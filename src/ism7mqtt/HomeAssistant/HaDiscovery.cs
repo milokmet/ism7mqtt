@@ -55,7 +55,18 @@ namespace ism7mqtt.HomeAssistant
 
         public IEnumerable<JsonMessage> GetDiscoveryInfo()
         {
-            return _config.Devices.SelectMany(GetDiscoveryInfo);
+            var devicesByName = _config.Devices.GroupBy(d => d.Name);
+            foreach (var group in devicesByName)
+            {
+                var sortedDevices = group.OrderBy(d => d.WriteAddress).ToList();
+                for (int i = 0; i < sortedDevices.Count; i++)
+                {
+                    foreach (var message in GetDiscoveryInfo(sortedDevices[i], i + 1, sortedDevices.Count))
+                    {
+                        yield return message;
+                    }
+                }
+            }
         }
 
         private string LaunderHomeassistantId(string id) {
@@ -76,7 +87,7 @@ namespace ism7mqtt.HomeAssistant
             return LaunderHomeassistantId(objectId);
         }
 
-        private IEnumerable<JsonMessage> GetDiscoveryInfo(Ism7Config.RunningDevice device)
+        private IEnumerable<JsonMessage> GetDiscoveryInfo(Ism7Config.RunningDevice device, int index, int count)
         {
             List<JsonMessage> result = new List<JsonMessage>();
             foreach (var parameter in device.Parameters)
@@ -135,27 +146,36 @@ namespace ism7mqtt.HomeAssistant
                         message.Add("icon", "mdi:gauge");
                 }
 
-                message.Add("device", GetDiscoveryDeviceInfo(device));
+                message.Add("device", GetDiscoveryDeviceInfo(device, index, count));
                 result.Add(new JsonMessage(discoveryTopic, message));
             }
             return result;
         }
 
-        private JsonObject GetDiscoveryDeviceInfo(Ism7Config.RunningDevice device)
+        private JsonObject GetDiscoveryDeviceInfo(Ism7Config.RunningDevice device, int index, int count)
         {
+            var name = $"{_discoveryId} {device.Name}";
+            var connectionId = $"{device.IP}_{device.Name}";
+
+            if (count > 1)
+            {
+                name += $" #{index}";
+                connectionId += $"_{device.WriteAddress}";
+            }
+
             return new JsonObject
             {
                 { "configuration_url", $"http://{device.IP}/" },
                 { "manufacturer", "Wolf" },
                 { "model", device.Name },
-                { "name", $"{_discoveryId} {device.Name}" },
+                { "name", name },
                 {
                     "connections", new JsonArray
                     (
                         new JsonArray
                         (
                             "ip_dev",
-                            $"{device.IP}_{device.Name}"
+                            connectionId
                         )
                     )
                 }
