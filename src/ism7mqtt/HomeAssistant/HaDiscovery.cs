@@ -278,21 +278,22 @@ namespace ism7mqtt.HomeAssistant
                 case ListParameterDescriptor list:
                     if (list.IsBoolean)
                     {
+                        // The MQTT state text is localized (e.g. "ZAP" for SVK), so the payloads must be too
                         if (list.Options.Any(x => x.Value == "Ein"))
                         {
-                            yield return ("payload_on", "Ein");
+                            yield return ("payload_on", _localizer["Ein"]);
                         }
                         if (list.Options.Any(x => x.Value == "Aktiviert"))
                         {
-                            yield return ("payload_on", "Aktiviert");
+                            yield return ("payload_on", _localizer["Aktiviert"]);
                         }
                         if (list.Options.Any(x => x.Value == "Aus"))
                         {
-                            yield return ("payload_off", "Aus");
+                            yield return ("payload_off", _localizer["Aus"]);
                         }
                         if (list.Options.Any(x => x.Value == "Deaktiviert"))
                         {
-                            yield return ("payload_off", "Deaktiviert");
+                            yield return ("payload_off", _localizer["Deaktiviert"]);
                         }
                     }
                     else
