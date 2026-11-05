@@ -42,6 +42,9 @@ namespace ism7mqtt.ISM7.Xml
                 case "SSPR":
                     result = JsonValue.Create(((short) _value.Value) * (1.0 / 255));
                     break;
+                case "SSPR100":
+                    result = JsonValue.Create(Math.Round(_value.Value * 100.0 / 255));
+                    break;
                 case "US4":
                     result = JsonValue.Create(_value.Value / 4.0);
                     break;
@@ -83,6 +86,10 @@ namespace ism7mqtt.ISM7.Xml
                 case "SSPR":
                     if (!Double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out parsed)) yield break;
                     data = (ushort) (parsed * (1.0/256));
+                    break;
+                case "SSPR100":
+                    if (!Double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out parsed)) yield break;
+                    data = (ushort) Math.Round(parsed * 255 / 100);
                     break;
                 case "US4":
                     if (!Double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out parsed)) yield break;

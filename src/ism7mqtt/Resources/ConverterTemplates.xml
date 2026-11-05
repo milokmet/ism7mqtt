@@ -1849,15 +1849,15 @@
     </NumericConverter16Template>
     <NumericConverter16Template CTID="80024">
       <TelegramNr>346</TelegramNr>
-      <Type>SSPR</Type>
+      <Type>SSPR100</Type>
     </NumericConverter16Template>
     <NumericConverter16Template CTID="80025">
       <TelegramNr>345</TelegramNr>
-      <Type>SSPR</Type>
+      <Type>SSPR100</Type>
     </NumericConverter16Template>
     <NumericConverter16Template CTID="80026">
       <TelegramNr>319</TelegramNr>
-      <Type>SSPR</Type>
+      <Type>SSPR100</Type>
     </NumericConverter16Template>
     <NumericConverter16Template CTID="80027">
       <TelegramNr>321</TelegramNr>
